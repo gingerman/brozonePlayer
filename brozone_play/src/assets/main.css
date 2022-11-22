@@ -1,0 +1,24 @@
+
+#app {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  padding: 0rem;
+  /* overflow-wrap: normal; */
+  word-wrap: normal;
+  font-weight: normal;
+}
+
+body{
+  background-color: rgb(53, 0, 0);
+  color:white;
+  font-family: 'Franklin Gothic Medium', sans-serif;
+}
+
+a {
+
+  color: green;
+  font-family: 'Franklin Gothic Medium', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+
+}
