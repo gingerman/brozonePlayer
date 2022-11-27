@@ -4,30 +4,27 @@
     import {Howl, Howler} from 'howler'
 
     const props = defineProps({
-        show: Object, 
-        key:Number
+        show:{
+            type:Object
+        },
     })
 
-    // is this how to do the name: 'Track' in the export default ??
-    const name = "Track";
-    
-    
-    const duration = 0;
-    const baseUrl = '';
-    const episodeNumber = props.show.episodeNumber;//key;//JSON.parse(ep.trim())["show"][0]['episodeNumber'];
-    const episodeName = props.show.episodeName;
-    const description = props.show.description;
-    const imageURL = props.show.image;
-    const loadmp3 = props.show.streamURL;
-    const streamDuration = props.show.streamDuration;
-    const publishedDate = props.show.publishedDate;
+    const emit = defineEmits(['clickTrackEmit'])
 
     let soundPlaying = false;
     let inProgress =  false;
+    let sound;
 
-    var sound;
-
-    console.log( "progress status = " + getInProgressStatus() );
+    // const baseUrl = '';
+    // const duration = '';
+    // const name = "Track";
+    // const episodeNumber = props.show.episodeNumber;  
+    // const episodeName = props.show.episodeName;
+    // const description = props.show.description;
+    // const imageURL = props.show.image;
+    // const loadmp3 = props.show.streamURL;
+    // const streamDuration = props.show.streamDuration;
+    // const publishedDate = props.show.publishedDate;
 
     function stopTrack(){
         console.log("TRACK>>stopTrack() - another track started");
@@ -40,17 +37,17 @@
         console.log( "f clickTrack" );
         // sound = new Howl();
 
-        // emit('id', episodeNumber );
+        emit("clickTrackEmit",props.show.episodeNumber)
         var self = this;
 
         if ( !getInProgressStatus() ){
-            console.log( "this_track_id" + episodeNumber );
+            console.log( "this_track_id =" + props.show.episodeNumber );
 
-            const trackSource =`${loadmp3}`;
-            console.log('trackSource = ' + trackSource + "\n");
+            // const trackSource =`${loadmp3}`;
+            //console.log('trackSource = ' + trackSource + "\n");
 
             sound = new Howl({
-                src: [ trackSource ],
+                src: [  props.show.streamURL ],
                 html5:true,
                 autoUnlock:true,
                 onplay: function(){
@@ -97,76 +94,64 @@
         };
         inProgress = !getInProgressStatus();
     }
+    function getInProgressStatus(){
+        return inProgress;
+    }
 
-    //     function getDate(){ 
-    //         return this.publishedDate 
-    //     }
-    //     function getTitle(){ 
-    //         return this.episodeName
-    //     }
-    //             // getTrack(){ 
-    //             //     return this.track.track },
-        function getInProgressStatus(){
-            return inProgress;
+    function seek(per) {
+        var self = this;
+
+        // Convert the percent into a seek position.
+        if (sound.playing()) {
+            sound.seek(sound.duration() * per);
         }
+        //console.log( 'seek update ' + this.sound.duration() );
+    }
 
-        function seek(per) {
-            var self = this;
+    function step() {
 
-            // Convert the percent into a seek position.
-            if (sound.playing()) {
-                sound.seek(sound.duration() * per);
-            }
-            //console.log( 'seek update ' + this.sound.duration() );
+        // Determine our current seek position.
+        var seek = sound.seek() ;
+        //timer.innerHTML = self.formatTime(Math.round(seek));
+        // progress.style.width = (((seek / sound.duration()) * 100) || 0) + '%';
+
+        var tim = self.formatTime(Math.round(seek));
+        var perc = ((( seek / this.sound.duration()) * 100) || 0) ;
+        // console.log( "percent = " + perc  +" -- " + seek)
+
+        // TrackProgressBar.data.oldPercent = perc;
+        // var pb = getElementsByClassName('.track-progress-bar');
+        // pb.style.width = perc;               
+
+        //console.log( "Track to TrackProgressBar = " + TrackProgressBar.methods.update() );
+        // TrackProgressBar.data;
+        // TrackProgressBar.methods.update(perc, tim)
+
+        // If the sound is still playing, continue stepping.
+        if (sound.playing()) {
+        // requestAnimationFrame(self.step.bind(self));
         }
+    }
 
-        function step() {
-                    // var self = this;
-                    //console.log( 'step update dur ' + this.sound.duration() );
-                    //console.log( 'step update seek ' + this.sound.seek() );
+    function formatTime(secs) {
+        var minutes = Math.floor(secs / 60) || 0;
+        var seconds = (secs - minutes * 60) || 0;
 
-                    // Determine our current seek position.
-                    var seek = sound.seek() ;
-                    //timer.innerHTML = self.formatTime(Math.round(seek));
-                    // progress.style.width = (((seek / sound.duration()) * 100) || 0) + '%';
-
-                    var tim = self.formatTime(Math.round(seek));
-                    var perc = ((( seek / this.sound.duration()) * 100) || 0) ;
-                    // console.log( "percent = " + perc  +" -- " + seek)
-
-                    // TrackProgressBar.data.oldPercent = perc;
-                    // var pb = getElementsByClassName('.track-progress-bar');
-                    // pb.style.width = perc;               
-
-                    //console.log( "Track to TrackProgressBar = " + TrackProgressBar.methods.update() );
-                    // TrackProgressBar.data;
-                    // TrackProgressBar.methods.update(perc, tim)
-
-                    // If the sound is still playing, continue stepping.
-                    if (sound.playing()) {
-                    // requestAnimationFrame(self.step.bind(self));
-                    }
-        }
-
-        function formatTime(secs) {
-            var minutes = Math.floor(secs / 60) || 0;
-            var seconds = (secs - minutes * 60) || 0;
-
-            return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-        }
+        return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    }
 
 </script>
 
 <template>
     <div>
-        <div id="info" >
+        <div id="info">
             <!-- <div id="trackContainer" v-bind="track" v-on:click=clickTrack() ></div> -->
             <div id="inner" v-on:click=clickTrack()>
-                <div id="epNumber">Episode {{ episodeNumber }}
+                <div id="epNumber">Episode {{ props.show.episodeNumber}}
                 </div>
-                <div id="epName">{{ episodeName }}</div>
-                <div id="epDate">{{publishedDate}}</div>
-            </div>
+                <div id="epName">{{ props.show.episodeName }}</div>
+                <div id="epDate">{{ props.show.publishedDate }}</div>
+             </div>
         </div>
     </div>
 </template>
@@ -190,6 +175,10 @@ div #info{
     border-radius:2vw;
 }
 
+div #infoplaying{
+    background-color:red;
+}
+
 div #inner{
     position: relative;
     top:1vh;
@@ -200,7 +189,12 @@ div #inner{
     margin: 0vh 0px 0vh 0px;
     background-color:black;
     border-radius:2vw;
+    cursor: pointer;
+}
 
+div #info :hover{
+
+    background-color:darkolivegreen;
 }
 
 div #epNumber{
