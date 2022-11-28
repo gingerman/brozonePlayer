@@ -6,6 +6,7 @@
       import brozones from '../assets/data'
       import axios from 'axios'
 
+
       //   export default {    emits: ['accepted']
       //   }
 
@@ -14,6 +15,7 @@
       //       return {articles:data}
       // }
       var loaded = true;
+      let broData = brozones;
       //let brozones;
 
       // const post = await fetch(`http://localhost:5173/brozone/`,{ mode:'no-cors',}).
@@ -31,20 +33,22 @@
       //////
       ///
 
-      // const brozones =() => {
-      //       axios.get('http://localhost:5173/brozone')
-      //       .then( Response =>{
-      //             console.log("got data ?");
-      //             loaded = false;
-      //             brozones = response.data;
-      //       })
-      //       .catch ( error =>{
-      //             this.loading = false
-      //             console.log(error)
-      //       })
-      // }
+      const sexy = () => {
+            axios.get('./data.json')
+            .then( Response =>{
+                  console.log("got data ?");
+                  loaded = false;
+                  broData = response.data;
+            })
+            .catch ( error =>{
+                  loaded = false
+                  console.log(error)
+            })
+      }
 
       let currentlyPlayingID = 0;
+
+      sexy();
 
 
       function  stopOtherTracksNotThis(value) {
