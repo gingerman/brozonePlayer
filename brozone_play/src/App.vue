@@ -1,6 +1,6 @@
 <script setup>
-import TrackList from './components/TrackList.vue';
-import Logo from './components/Logo.vue';
+import TrackList from './components/Track-List.vue';
+import Logo from './components/Logo-Comp.vue';
 
 // const trackList = "hi";
 </script>
